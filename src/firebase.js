@@ -15,3 +15,4 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
+export const BE_LINK ="https://yogi-estate-be.onrender.com";
