@@ -11,6 +11,6 @@ export default defineConfig({
       },
     },
   },
-
+  base: "/yogi-estate",
   plugins: [react()],
 });

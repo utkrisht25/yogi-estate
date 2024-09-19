@@ -56,12 +56,14 @@ export default function Profile() {
         setFilePerc(Math.round(progress));
       },
       (error) => {
-        setFileUploadError(true);
+        setFileUploadError(error);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
-          setFormData({ ...formData, avatar: downloadURL })
-        );
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>{
+          console.log(downloadURL);
+                    setFormData({ ...formData, avatar: downloadURL })
+                    handleSubmit();
+              }        );
       }
     );
   };
@@ -71,7 +73,6 @@ export default function Profile() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
     try {
       dispatch(updateUserStart());
       const res = await fetch(`${BE_LINK}/api/user/update/${currentUser._id}`, {
@@ -80,6 +81,7 @@ export default function Profile() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
+        credentials: 'include'
       });
       const data = await res.json();
       if (data.success === false) {
@@ -173,14 +175,14 @@ export default function Profile() {
         />
         <img
           onClick={() => fileRef.current.click()}
-          src={formData.avatar || currentUser.avatar}
+          src={currentUser.avatar}
           alt='profile'
           className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2'
         />
         <p className='text-sm self-center'>
           {fileUploadError ? (
             <span className='text-red-700'>
-              Error Image upload (image must be less than 2 mb)
+              {JSON.stringify(fileUploadError.message)}
             </span>
           ) : filePerc > 0 && filePerc < 100 ? (
             <span className='text-slate-700'>{`Uploading ${filePerc}%`}</span>
